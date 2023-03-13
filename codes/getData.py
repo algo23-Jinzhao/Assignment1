@@ -1,6 +1,10 @@
 import akshare as ak
 import pandas as pd
 
+# 得到指数信息表
+index_stock_info_df = ak.index_stock_info()
+index_stock_info_df.to_csv('./IndexInfo.csv', index=0)
+
 # 上证综指（000001.SH）、中证500（000905.SH）、创业板指数（399006.SZ）、中小板指数（399005.SZ）、沪深300指数（000300.SH）
 
 index_code_list = ['000001', '000905', '399006', '399005', '000300']

@@ -74,5 +74,3 @@ def get_factors(path_start, path_end):
         
         df2 = df1[['收盘', 'gain', 'loss', 'gain_llt', 'loss_llt', 'vnsp_llt']].shift().dropna(axis=0) # 使用前一天的量价信息产生的因子
         df2.to_csv(path_end + '/' + file)
-
-get_factors('./data', './factors')
