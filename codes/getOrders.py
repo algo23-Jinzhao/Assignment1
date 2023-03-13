@@ -18,7 +18,7 @@ def get_orders(path_start, path_end, factor):
 
         # 信号转换为order，只做多
         position = 0
-        for i in range(1, len(df2.index)):
+        for i in range(len(df2.index)):
             delta_position = 0
             if position == 0 and df2.loc[df2.index[i], 'signal'] == '看多':
                 delta_position = 1
@@ -26,7 +26,6 @@ def get_orders(path_start, path_end, factor):
                 delta_position = -position
             position += delta_position
             df2.loc[df2.index[i], 'delta_position_long_only'] = delta_position
-        df2.dropna(axis=0, inplace=True)
 
         # 信号转换为order，多空
         position = 0
@@ -39,8 +38,6 @@ def get_orders(path_start, path_end, factor):
                 delta_position = -1
             position += delta_position
             df2.loc[df2.index[i], 'delta_position_long_short'] = delta_position
-            
-        df2.dropna(axis=0, inplace=True)
 
         df2[['收盘', 'delta_position_long_only', 'position_long_short', 'delta_position_long_short']].to_csv(\
             path_end + '/' + file[:-4] + '_' + factor + '.csv')
