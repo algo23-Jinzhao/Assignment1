@@ -47,7 +47,7 @@ def get_results(path_start, path_end, factor):
         #绘制第一个Y轴
         fig = plt.figure(figsize=(20,8), dpi=80)
         ax = fig.add_subplot(111)
-        lin1 = ax.plot(df3.index, df3['收盘'], label='cumsum return')
+        lin1 = ax.plot(df3.index, df3['收盘'], label='close price')
         
         #绘制另一Y轴    
         ax1 = ax.twinx()
