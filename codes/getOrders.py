@@ -41,5 +41,3 @@ def get_orders(path_start, path_end, factor):
 
         df2[['收盘', 'delta_position_long_only', 'position_long_short', 'delta_position_long_short']].to_csv(\
             path_end + '/' + file[:-4] + '_' + factor + '.csv')
-
-get_orders('./factors', './orders', 'vnsp_llt')

@@ -28,19 +28,22 @@
 趋势跟踪（一把子梭哈）：看空，则开空仓，如有多仓平多仓；看多，则开多仓，如有空仓平空仓；  
 均值回归（逐步加仓）：看空做多，逐步加仓，看多做空。
 # 代码运行
-1. 准备文件夹：/data, /factors, /orders, /figures
-2. 代码运行顺序：getIndexInfo.py -> getData.py -> getFactors.py -> testFactors.py -> getOrders.py -> getResults.py
+根目录下的文件夹：/data, /factors, /orders, /figures  
+运行顺序：getData.py -> run.py
 ## 数据准备
 - 数据选取：因子构建部分采用指数数据，原文采用指数数据进行交易。  
 具体而言，选取如下指数：上证综指（000001.SH）、中证500（000905.SH）、创业板指数（399006.SZ）、中小板指数（399005.SZ）、沪深300指数（000300.SH）
-- 数据类型：日度成交额，成交量，换手率，指数收盘价
+- 数据标签：日度成交额，成交量，换手率，指数收盘价
 - 回测区间：各指数上市日至2023/3/10  
 ## 安装所需依赖包
 `pip install akshare`
 ## 各模块说明
 - getData.py: 通过akshare API得到所需数据；   
 - getFactors.py: 构造gain因子，loss因子和vnsp因子；  
-- getOrders.py: 实现择时策略：当t − 1交易日的对应因子值比t − 2日的因子数值小时，说明卖出意愿变强，则在t交易日看空，反之则在t交易日看多。
+- testFactors.py：进行因子检验；
+- getOrders.py: 实现择时策略，即当t − 1交易日的对应因子值比t − 2日的因子数值小时，说明卖出意愿变强，则在t交易日看空，反之则在t交易日看多；
+- getResults.py: 进行策略回测，得到回测曲线；
+- run.py: 在已有数据的基础上依次运行：getFactors.py，getOrders.py，getResults.py。
 # 结果分析
 - 因子与收益率的相关性不强；
 - 多空的收益不如纯多；

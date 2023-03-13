@@ -59,5 +59,3 @@ def get_results(path_start, path_end, factor):
         labs = [l.get_label() for l in lins]
         ax.legend(lins, labs, loc="upper left", fontsize=15)
         plt.savefig(path_end + '/' + file[:-12] + factor[:4] + '.png')
-        
-get_results('./orders', './figures', 'vnsp_llt')

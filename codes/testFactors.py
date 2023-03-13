@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 
-def test_orders(path_start, factor):
+def test_factors(path_start, factor):
     files = os.listdir(path_start)
     for file in files:
         df2 = pd.read_csv(path_start + '/' + file, index_col=0)
@@ -13,4 +13,4 @@ def test_orders(path_start, factor):
                 else -1
         print(df2[['return', 'factor_slope']].corr())
 
-test_orders('./factors', 'vnsp_llt')
+test_factors('./factors', 'vnsp_llt')
