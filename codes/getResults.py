@@ -48,11 +48,13 @@ def get_results(path_start, path_end, factor):
         fig = plt.figure(figsize=(20,8), dpi=80)
         ax = fig.add_subplot(111)
         lin1 = ax.plot(df3.index, df3['收盘'], label='close price')
+        ax.set_ylabel('close price')
         
         #绘制另一Y轴    
         ax1 = ax.twinx()
         lin2 = ax1.plot(df3.index, df3['net_value_long_only'], color='blue', label="long only")
         lin3 = ax1.plot(df3.index, df3['net_value_long_short'], color="red", label="long short")
+        ax1.set_ylabel('net value')
         
         #合并图例
         lins = lin1 + lin2 + lin3
