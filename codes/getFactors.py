@@ -4,9 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 参数
-delta = 0.5
 n = 60
 d = 60
+d_vnsp = 10
 
 def get_factors(path_start, path_end):
     files = os.listdir(path_start)
@@ -39,38 +39,40 @@ def get_factors(path_start, path_end):
             df1.loc[df1.index[i], 'loss'] = loss
         df1.dropna(axis=0, inplace=True)
 
-        # 因子平滑化
+        # 因子平滑化，d越大，延迟越高，曲线越平滑
         def LLT(data, d):
-            llt = data.copy()
+            llt = [(data.iloc[0]+data.iloc[1])/2, (data.iloc[0]+data.iloc[1])/2]
             alpha = 2/(d+1)
             for i in range(2, len(data.index)):
-                llt.iloc[i] = (alpha-alpha**2/4)*data.iloc[i] + alpha**2/2*data.iloc[i-1] - (alpha-3*alpha**2/4)*data.iloc[i-2] \
-                    + 2*(1-alpha)*llt.iloc[i-1] - (1-alpha)**2*llt.iloc[i-2]
+                llt.append((alpha-alpha**2/4)*data.iloc[i] + alpha**2/2*data.iloc[i-1] - (alpha-3*alpha**2/4)*data.iloc[i-2] \
+                    + 2*(1-alpha)*llt[i-1] - (1-alpha)**2*llt[i-2])
             return llt
 
         df1['gain_llt'] = LLT(df1['gain'], d)
         df1['loss_llt'] = LLT(df1['loss'], d)
-        df1['vnsp_llt'] = LLT(df1['gain'] - delta*df1['loss'], d)
+        df1['vnsp_llt'] = LLT(df1['gain_llt'] + np.square(df1['loss_llt']), d_vnsp)
+
+        # 使用前一天的量价信息产生的因子
+        df2 = df1.loc[df1.index[d+d_vnsp:], ['收盘', 'gain', 'loss', 'gain_llt', 'loss_llt', 'vnsp_llt']].shift().dropna(axis=0)
 
         #绘制第一个Y轴
         fig = plt.figure(figsize=(20,8), dpi=80)
         ax = fig.add_subplot(111)
-        lin1 = ax.plot(df1.index, df1['收盘'], label='cumsum return')
+        lin1 = ax.plot(df2.index, df2['收盘'], label='cumsum return')
         
         #绘制另一Y轴    
         ax1 = ax.twinx()
 
-        lin2 = ax1.plot(df1.index, df1['gain'], label='gain', color='orange')
-        lin3 = ax1.plot(df1.index, df1['loss'], label='loss', color='yellow')
-        lin4 = ax1.plot(df1.index, df1['gain_llt'], label='gain_llt', color='red')
-        lin5 = ax1.plot(df1.index, df1['loss_llt'], label='loss_llt', color='green')
-        lin6 = ax1.plot(df1.index, df1['vnsp_llt'], label='vnsp_llt', color='purple')
+        lin2 = ax1.plot(df2.index, df2['gain'], label='gain', color='orange')
+        lin3 = ax1.plot(df2.index, df2['loss'], label='loss', color='yellow')
+        lin4 = ax1.plot(df2.index, df2['gain_llt'], label='gain_llt', color='red')
+        lin5 = ax1.plot(df2.index, df2['loss_llt'], label='loss_llt', color='green')
+        lin6 = ax1.plot(df2.index, df2['vnsp_llt'], label='vnsp_llt', color='purple')
         
         #合并图例
         lins = lin2 + lin3 + lin4 + lin5 + lin6 + lin1
         labs = [l.get_label() for l in lins]
-        ax.legend(lins, labs, loc="upper left", fontsize=15)
-        plt.savefig('./figures/' + file[:-4] + '_factors.png')
-        
-        df2 = df1[['收盘', 'gain', 'loss', 'gain_llt', 'loss_llt', 'vnsp_llt']].shift().dropna(axis=0) # 使用前一天的量价信息产生的因子
+        ax.legend(lins, labs, bbox_to_anchor=(1.05, 0), loc=3, borderaxespad=0, fontsize=15)
+        plt.savefig('./figures/' + file[:-4] + '_factors.png', dpi=600, bbox_inches='tight')
+         
         df2.to_csv(path_end + '/' + file)
