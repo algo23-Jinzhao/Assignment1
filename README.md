@@ -21,6 +21,7 @@
 - https://bigquant.com/wiki/doc/qushi-zhengquan-20170303-3imEKrVq0S  
 - https://zhuanlan.zhihu.com/p/469846743
 # <mark>创新点<mark>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 - 考虑到V型处置效应与传统处置效应的结合，即在低亏损时表现为传统处置效应，高亏损时表现为V型处置效应，故将vnsp因子定义为$vnsp_t=gain_t + (loss_t)^2$
 - 避免初始状态计算误差过大，LLT前两期初始值设置为原始值前两期的平均数；
 - 两次平滑化：将gain因子和loss因子分别平滑d期后，得到的vnsp因子再进行一轮平滑，平滑期设为d_vnsp；
