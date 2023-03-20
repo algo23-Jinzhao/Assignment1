@@ -16,34 +16,33 @@
 - 将处置效应的因子分解成gain和loss
 - LLT方法降低因子频率:  
 >本篇专题报告对因子走势进行了平滑性处理，具体的方法是采用广发证券金融工程在2013年7月26日《低延迟趋势线与交易性择时》报告中采用的LLT方法。
-
-相关链接：
-- https://bigquant.com/wiki/doc/qushi-zhengquan-20170303-3imEKrVq0S  
-- https://zhuanlan.zhihu.com/p/469846743
-# <mark>创新点<mark>
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
-- 考虑到V型处置效应与传统处置效应的结合，即在低亏损时表现为传统处置效应，高亏损时表现为V型处置效应，故将vnsp因子定义为$vnsp_t=gain_t + (loss_t)^2$
+- 相关链接：
+  - https://bigquant.com/wiki/doc/qushi-zhengquan-20170303-3imEKrVq0S  
+  - https://zhuanlan.zhihu.com/p/469846743
+# 创新点
+- 考虑到V型处置效应与传统处置效应的结合，即在低亏损时表现为传统处置效应，高亏损时表现为V型处置效应，故将vnsp因子定义为vnsp_t = gain_t + (loss_t)^2
 - 避免初始状态计算误差过大，LLT前两期初始值设置为原始值前两期的平均数；
 - 两次平滑化：将gain因子和loss因子分别平滑d期后，得到的vnsp因子再进行一轮平滑，平滑期设为d_vnsp；
 - 避免初始生成的因子误差较大：LLT生成的因子从迭代多期（d+d_vnsp期）后开始采用以提高模型稳健性；
 - 仓位管理——趋势跟踪：看空，则开空仓，如有多仓平多仓；看多，则开多仓，如有空仓平空仓；原文对于纯多和多空的差异没有提及；  
 # 代码运行
 根目录下的文件夹：/data, /factors, /orders, /figures  
-运行顺序：getData.py -> run.py
+- `getData.py` 的结果存放在 /data 中
+- `run.py` 的可视化结果在 /figures 中
 ## 数据准备
 - 数据选取：因子构建部分采用指数数据，原文采用指数数据进行交易。  
 具体而言，选取如下指数：上证综指（000001.SH）、中证500（000905.SH）、创业板指数（399006.SZ）、中小板指数（399005.SZ）、沪深300指数（000300.SH）
 - 数据标签：日度成交额，成交量，换手率，指数收盘价
 - 回测区间：各指数上市日至2023/3/10  
 ## 安装所需依赖包
-特别地，`pip install akshare`
+内容见 `requirements.txt`
 ## 各模块说明
-- getData.py: 通过akshare API得到所需数据；   
-- getFactors.py: 构造gain因子，loss因子和vnsp因子；  
-- getOrders.py: 实现择时策略，即当t − 1交易日的对应因子值比t − 2日的因子数值小时，说明卖出意愿变弱，股价因为超买而高估，则在t交易日看空，反之则在t交易日看多；
-- getResults.py: 进行策略回测，得到回测曲线；
-- run.py: 在已有数据的基础上，作为引擎依次运行以下三个模块：getFactors.py，getOrders.py，getResults.py。
-- testFactors.py：进行因子检验；
+- `getData.py`: 通过akshare API得到所需数据；   
+- `getFactors.py`: 构造gain因子，loss因子和vnsp因子；  
+- `getOrders.py`: 实现择时策略，即当t − 1交易日的对应因子值比t − 2日的因子数值小时，说明卖出意愿变弱，股价因为超买而高估，则在t交易日看空，反之则在t交易日看多；
+- `getResults.py`: 进行策略回测，得到回测曲线；
+- `run.py`: 在已有数据的基础上，作为引擎依次运行以下三个模块：`getFactors.py`，`getOrders.py`，`getResults.py`。
+- `testFactors.py`：进行因子检验；
 # 结果分析
 - 因子与收益率的相关性不强；
 - 大多数情况下，多空的收益不如纯多。
