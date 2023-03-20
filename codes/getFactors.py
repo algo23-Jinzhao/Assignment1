@@ -57,7 +57,8 @@ def get_factors(path_start, path_end):
         #绘制第一个Y轴
         fig = plt.figure(figsize=(20,8), dpi=80)
         ax = fig.add_subplot(111)
-        lin1 = ax.plot(df2.index, df2['收盘'], label='cumsum return')
+        lin1 = ax.plot(df2.index, df2['收盘'], label='close price')
+        ax.set_ylabel('close price')
         
         #绘制另一Y轴    
         ax1 = ax.twinx()
@@ -67,6 +68,7 @@ def get_factors(path_start, path_end):
         lin4 = ax1.plot(df2.index, df2['gain_llt'], label='gain_llt', color='red')
         lin5 = ax1.plot(df2.index, df2['loss_llt'], label='loss_llt', color='green')
         lin6 = ax1.plot(df2.index, df2['vnsp_llt'], label='vnsp_llt', color='purple')
+        ax1.set_ylabel('factor value')
         
         #合并图例
         lins = lin2 + lin3 + lin4 + lin5 + lin6 + lin1
