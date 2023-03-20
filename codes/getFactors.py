@@ -20,7 +20,7 @@ def get_factors(path_start, path_end):
         df1.dropna(axis=0, inplace=True) # 删除所有为nan的行
 
         # 因子构建
-        for i in range(n, len(df1.index)):
+        for i in range(n, len(df1.index)-1):
             # 得到i-1到i-n这段的数据, 换手率计算权重
             initial_array = 1 - df1.loc[df1.index[i-n]:df1.index[i-1], '成交均价'] / df1.loc[df1.index[i], '成交均价']
             array_1 = df1.loc[df1.index[i-n]:df1.index[i-1], '换手率']
@@ -35,8 +35,8 @@ def get_factors(path_start, path_end):
                     gain += j
                 elif j < 0:
                     loss += j
-            df1.loc[df1.index[i], 'gain'] = gain
-            df1.loc[df1.index[i], 'loss'] = loss
+            df1.loc[df1.index[i+1], 'gain'] = gain
+            df1.loc[df1.index[i+1], 'loss'] = loss
         df1.dropna(axis=0, inplace=True)
 
         # 因子平滑化，d越大，延迟越高，曲线越平滑
@@ -52,8 +52,7 @@ def get_factors(path_start, path_end):
         df1['loss_llt'] = LLT(df1['loss'], d)
         df1['vnsp_llt'] = LLT(df1['gain_llt'] + np.square(df1['loss_llt']), d_vnsp)
 
-        # 使用前一天的量价信息产生的因子
-        df2 = df1.loc[df1.index[d+d_vnsp:], ['收盘', 'gain', 'loss', 'gain_llt', 'loss_llt', 'vnsp_llt']].shift().dropna(axis=0)
+        df2 = df1.iloc[(d+d_vnsp):, :].copy()
 
         #绘制第一个Y轴
         fig = plt.figure(figsize=(20,8), dpi=80)
