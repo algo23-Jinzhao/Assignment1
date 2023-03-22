@@ -52,12 +52,13 @@ def get_results(path_start, path_end, factor):
         
         #绘制另一Y轴    
         ax1 = ax.twinx()
-        lin2 = ax1.plot(df3.index, df3['net_value_long_only'], color='blue', label="long only")
-        lin3 = ax1.plot(df3.index, df3['net_value_long_short'], color="red", label="long short")
+        lin2 = ax1.plot(df3.index, df3['收盘']/df3.loc[df3.index[0], '收盘'], color='green', label="benchmark")
+        lin3 = ax1.plot(df3.index, df3['net_value_long_only'], color='red', label="long only")
+        lin4 = ax1.plot(df3.index, df3['net_value_long_short'], color="blue", label="long short")
         ax1.set_ylabel('net value')
         
         #合并图例
-        lins = lin1 + lin2 + lin3
+        lins = lin1 + lin2 + lin3 + lin4
         labs = [l.get_label() for l in lins]
         ax.legend(lins, labs, loc="upper left", fontsize=15)
         plt.savefig(path_end + '/' + file[:-12] + factor[:4] + '.png')
